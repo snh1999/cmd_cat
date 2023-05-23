@@ -54,7 +54,7 @@ impl SqliteDatabase {
         Ok(matching_commands)
     }
 
-    pub fn view_all_commands(&self) -> Result<()> {
+    pub fn _view_all_commands(&self) -> Result<()> {
         let mut stmt = self
             .connection
             .prepare("SELECT command_name, description FROM commands")?;

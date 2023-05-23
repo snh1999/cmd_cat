@@ -104,7 +104,7 @@ pub fn insert_commands_from_file(filepath: &str, db: &SqliteDatabase) {
 }
 
 pub fn clean_update_database(db: &SqliteDatabase, folder_path: &str) {
-    db.clear();
+    db.clear().unwrap();
     update_database(db, folder_path)
 }
 

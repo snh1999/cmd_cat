@@ -1,11 +1,11 @@
-pub struct CommandParser {}
+pub struct _CommandParser {}
 
-impl CommandParser {
-    pub fn new() -> Self {
-        CommandParser {}
-    }
+// impl CommandParser {
+//     pub fn new() -> Self {
+//         CommandParser {}
+//     }
 
-    pub fn parse_command<'a>(&self, input: &'a str) -> Vec<&'a str> {
-        input.split_whitespace().collect()
-    }
-}
+//     pub fn parse_command<'a>(&self, input: &'a str) -> Vec<&'a str> {
+//         input.split_whitespace().collect()
+//     }
+// }

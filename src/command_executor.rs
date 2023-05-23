@@ -1,4 +1,3 @@
-use std::io;
 use std::process::{exit, Command};
 
 pub struct CommandExecutor {}
@@ -9,6 +8,7 @@ impl CommandExecutor {
     }
 
     pub fn execute_command(&self, command: &str) {
+        print!(">>");
         let mut parts = command.split_whitespace();
         if let Some(command_name) = parts.next() {
             let mut process = Command::new(command_name);
