@@ -1,4 +1,3 @@
-use inquire::list_option::ListOption;
 use inquire::ui::{Attributes, Color, RenderConfig, StyleSheet, Styled};
 
 fn _get_selected_option_style_sheet() -> StyleSheet {

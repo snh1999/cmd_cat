@@ -23,13 +23,13 @@ impl CommandExecutor {
             };
 
             if !output.stdout.is_empty() {
-                let stdout = String::from_utf8_lossy(&output.stdout);
+                let stdout = String::from_utf8(output.stdout).unwrap();
                 println!("{}", stdout);
             }
 
             if !output.stderr.is_empty() {
                 let stderr = String::from_utf8_lossy(&output.stderr);
-                eprintln!("Command error:\n{}", stderr);
+                eprintln!("{}", stderr);
             }
         } else {
             println!("Invalid command");

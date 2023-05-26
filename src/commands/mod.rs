@@ -1,3 +1,4 @@
+pub mod command_executor;
 pub struct Command {
     pub name: String,
     pub description: String,

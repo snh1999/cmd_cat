@@ -4,7 +4,11 @@ use colored::Colorize;
 use inquire::{Confirm, Select};
 
 pub fn get_confirmation() -> bool {
-    let response = Confirm::new("Do you want to execute the command?")
+    get_custom_confirmation("Do you want to execute the command?")
+}
+
+pub fn get_custom_confirmation(prompt_text: &str) -> bool {
+    let response = Confirm::new(prompt_text)
         .with_default(true)
         .with_render_config(confirm_render_config())
         .prompt();

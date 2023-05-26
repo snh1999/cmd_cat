@@ -1,5 +1,5 @@
-use crate::command::Command;
-use rusqlite::{Connection, Result};
+use crate::commands::Command;
+use rusqlite::{params, Connection, Result};
 
 pub struct SqliteDatabase {
     connection: Connection,
@@ -70,6 +70,47 @@ impl SqliteDatabase {
         }
         Ok(())
     }
+
+    pub fn search_commands(&self, input: &str) -> Result<Vec<(String, String)>> {
+        let search_words: Vec<&str> = input.split_whitespace().collect();
+
+        let mut matching_commands = Vec::new();
+        let mut command_ids = Vec::new();
+
+        // Step 1: Search using the first word and store the results
+        let first_word = search_words.get(0).cloned().unwrap_or("");
+        let mut stmt = self.connection.prepare("SELECT id, command_name, description FROM commands WHERE command_name LIKE ?1 OR description LIKE ?1")?;
+        let mut rows = stmt.query(params![format!("%{}%", first_word)])?;
+        while let Some(row) = rows.next()? {
+            let command_id: i32 = row.get(0)?;
+            let command_name: String = row.get(1)?;
+            let description: String = row.get(2)?;
+            matching_commands.push((command_name.clone(), description.clone()));
+            command_ids.push(command_id);
+        }
+
+        // Step 2: Filter the results for each subsequent word
+        for word in search_words.iter().skip(1) {
+            let mut new_matching_commands = Vec::new();
+            let mut new_command_ids = Vec::new();
+
+            for (command_id, (command_name, description)) in
+                command_ids.iter().zip(matching_commands.iter())
+            {
+                // Check if the word is present in the command name or description
+                if command_name.contains(word) || description.contains(word) {
+                    new_matching_commands.push((command_name.clone(), description.clone()));
+                    new_command_ids.push(*command_id);
+                }
+            }
+
+            matching_commands = new_matching_commands;
+            command_ids = new_command_ids;
+        }
+
+        Ok(matching_commands)
+    }
+
     pub fn clear(&self) -> Result<()> {
         self.connection.execute("DELETE FROM commands", [])?;
         Ok(())

@@ -1,4 +1,4 @@
-use crate::command_executor::CommandExecutor;
+use crate::commands::command_executor::CommandExecutor;
 use crate::custom_styling::menu_style::confirm_render_config;
 use colored::*;
 use inquire::Text;
@@ -99,7 +99,6 @@ fn _replace_input_string(input_string: &str) -> String {
 }
 
 fn _get_user_input(message: String) -> String {
-    // todo - clear line
     let name = Text::new(&message)
         .with_render_config(confirm_render_config())
         .prompt();
