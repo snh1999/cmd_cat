@@ -1,6 +1,7 @@
+use crate::custom_styling::color_style;
 use crate::custom_styling::menu_style::{confirm_render_config, my_render_config};
 use crate::utils::{clear_previous_line, highlight_command, highlight_description};
-use colored::Colorize;
+
 use inquire::{Confirm, Select};
 
 pub fn get_confirmation() -> bool {
@@ -49,8 +50,8 @@ fn _commands_menu(menu_items: Vec<String>) -> i32 {
             let (description, command) = data.value.split_once("\n").unwrap();
             println!(
                 "  {}:\n  {}\n{}",
-                "Selected Command".bold(),
-                description.bright_green(),
+                color_style::bold_text("Selected Command"),
+                color_style::color_green(description),
                 command
             );
             return data.index as i32;

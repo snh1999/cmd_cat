@@ -1,6 +1,6 @@
-use crate::commands::command_executor::CommandExecutor;
+use crate::commands::command_executor::execute_command;
+use crate::custom_styling::color_style;
 use crate::custom_styling::menu_style::confirm_render_config;
-use colored::*;
 use inquire::Text;
 pub mod menu;
 
@@ -8,25 +8,7 @@ pub fn highlight_command(command: &str, input: &str) -> String {
     let command_parts: Vec<&str> = command.split_whitespace().collect();
     let input_parts: Vec<&str> = input.split_whitespace().collect();
 
-    let color = |index: usize| match input_parts.get(index) {
-        Some(_) if index < command_parts.len() => {
-            if index < input_parts.len() && input_parts[index] == command_parts[index] {
-                Color::BrightRed
-            } else {
-                Color::Red
-            }
-        }
-        _ => Color::BrightCyan,
-    };
-
-    let highlighted_command = command_parts
-        .iter()
-        .enumerate()
-        .map(|(i, part)| part.color(color(i)).to_string())
-        .collect::<Vec<String>>()
-        .join(" ");
-
-    highlighted_command
+    color_style::format_command(command_parts, input_parts)
 }
 
 pub fn highlight_description(description: &str) -> String {
@@ -34,30 +16,30 @@ pub fn highlight_description(description: &str) -> String {
     description.to_string()
 }
 
-pub fn execute_current_command(
-    command: &str,
-    description: &str,
-    command_executor: &CommandExecutor,
-) {
-    println!(" {} {}", description.bright_green(), command.bright_red());
+pub fn execute_current_command(command: &str, description: &str) {
+    println!(
+        " {} {}",
+        color_style::color_green(description),
+        color_style::color_light_red(command)
+    );
 
     let confirmation = menu::get_confirmation();
     // clear_previous_line();
 
     if confirmation {
-        command_executor.execute_command(command);
+        execute_command(command);
     } else {
         println!()
     }
 }
 
-pub fn check_chosen_command(command: &str, description: &str, command_executor: &CommandExecutor) {
+pub fn check_chosen_command(command: &str, description: &str) {
     let command = _replace_input_string(command);
 
     if command.is_empty() {
         return;
     }
-    execute_current_command(&command, description, command_executor)
+    execute_current_command(&command, description)
 }
 
 fn clear_selection_lines() {
@@ -72,17 +54,28 @@ fn _replace_input_string(input_string: &str) -> String {
 
     while let Some(start_delim) = input_string[start..].find("{{") {
         let start_index = start + start_delim;
+        let mut input: String = String::new();
 
         if let Some(end_delim) = input_string[start_index..].find("}}") {
-            let end_index = start_index + end_delim + 2;
-            let word = &input_string[start_index + 2..end_index - 2];
-            let replaced_word = word.replace("_", " ").replace("|", " or ").bright_cyan();
+            let mut end_index = start_index + end_delim + 2;
+            if end_index + 1 < input_string.len() && &input_string[end_index..end_index + 1] == "["
+            {
+                if let Some(end_val) = input_string[end_index + 1..].find("]") {
+                    let end_val_index = end_index + 1 + end_val;
+                    input = String::from(&input_string[end_index + 1..end_val_index]);
+                    end_index = end_val_index + 1;
+                }
+            } else {
+                let word = &input_string[start_index + 2..end_index - 2];
+                let replaced_word = replace_word(word);
 
-            let input = _get_user_input(format!("Enter '{}': ", replaced_word));
-            clear_previous_line();
-            if input.is_empty() {
-                return input;
+                input = _get_user_input(format!("Enter '{}': ", replaced_word));
+                clear_previous_line();
+                if input.is_empty() {
+                    return input;
+                }
             }
+
             replaced_string += &input_string[start..start_index];
             replaced_string += &input;
 
@@ -96,6 +89,11 @@ fn _replace_input_string(input_string: &str) -> String {
 
     replaced_string += &input_string[start..]; // Append the remaining portion of the input string
     replaced_string
+}
+
+fn replace_word(word: &str) -> String {
+    let text = word.replace("_", " ").replace("|", " or ");
+    color_style::color_light_cyan(&text)
 }
 
 fn _get_user_input(message: String) -> String {
