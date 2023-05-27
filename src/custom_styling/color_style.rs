@@ -1,6 +1,16 @@
 use termion::color::{self, Color};
 use termion::style;
 
+/// Colorizes the given text with the specified text color.
+///
+/// # Arguments
+///
+/// * `text` - The text to colorize.
+/// * `text_color` - The color to apply to the text.
+///
+/// # Returns
+///
+/// The colorized text as a `String`.
 pub fn colorize_text<T: Color>(text: &str, text_color: T) -> String {
     format!(
         "{color}{text}{reset}",
@@ -21,6 +31,15 @@ pub fn color_light_cyan(text: &str) -> String {
     colorize_text(text, color::LightCyan)
 }
 
+/// Makes the given text bold.
+///
+/// # Arguments
+///
+/// * `text` - The text to make bold.
+///
+/// # Returns
+///
+/// The bold text as a `String`.
 pub fn bold_text(text: &str) -> String {
     format!(
         "{bold}{text}{reset}",
@@ -29,6 +48,19 @@ pub fn bold_text(text: &str) -> String {
     )
 }
 
+/// Formats the command by applying colorization based on the input parts.
+/// Red for exactly matching words
+/// LightBlue for partially matching words
+/// LightCyan for words not present in input
+///
+/// # Arguments
+///
+/// * `command_parts` - The parts of the command.
+/// * `input_parts` - The parts of the input.
+///
+/// # Returns
+///
+/// The formatted command as a `String`.
 pub fn format_command(command_parts: Vec<&str>, input_parts: Vec<&str>) -> String {
     let colorfn = |index: usize| match input_parts.get(index) {
         Some(_) if index < command_parts.len() => {

@@ -4,10 +4,24 @@ use crate::utils::{clear_previous_line, highlight_command, highlight_description
 
 use inquire::{Confirm, Select};
 
+/// Gets the confirmation from the user to execute the command.
+///
+/// # Returns
+///
+/// `true` if the user confirms execution, `false` otherwise.
 pub fn get_confirmation() -> bool {
     get_custom_confirmation("Do you want to execute the command?")
 }
 
+/// Gets a custom confirmation from the user with the specified prompt text.
+///
+/// # Arguments
+///
+/// * `prompt_text` - The text to display as the confirmation prompt.
+///
+/// # Returns
+///
+/// `true` if the user confirms, `false` otherwise.
 pub fn get_custom_confirmation(prompt_text: &str) -> bool {
     let response = Confirm::new(prompt_text)
         .with_default(true)
@@ -22,6 +36,16 @@ pub fn get_custom_confirmation(prompt_text: &str) -> bool {
     response
 }
 
+/// Gets the array of formatted command menu items.
+///
+/// # Arguments
+///
+/// * `matching_commands` - The vector of matching commands.
+/// * `input` - The input string to match against.
+///
+/// # Returns
+///
+/// A vector of formatted command menu items.
 pub fn get_command_array(matching_commands: &Vec<(String, String)>, input: &str) -> Vec<String> {
     let mut menu_items: Vec<String> = Vec::new();
     for (command, description) in matching_commands {
@@ -34,7 +58,16 @@ pub fn get_command_array(matching_commands: &Vec<(String, String)>, input: &str)
     menu_items
 }
 
-fn _commands_menu(menu_items: Vec<String>) -> i32 {
+/// Displays the commands menu and returns the selected index.
+///
+/// # Arguments
+///
+/// * `menu_items` - The vector of formatted command menu items.
+///
+/// # Returns
+///
+/// The selected index of the command menu.
+fn _commands_menu(menu_items: Vec<String>) -> Result<usize, i32> {
     let response = Select::new("Matching commands", menu_items)
         .with_render_config(my_render_config())
         .with_help_message(
@@ -54,16 +87,26 @@ fn _commands_menu(menu_items: Vec<String>) -> i32 {
                 color_style::color_green(description),
                 command
             );
-            return data.index as i32;
+            return Ok(data.index);
         }
-        Err(_) => -1,
+        Err(_) => Err(-1),
     }
 }
 
+/// Handles multiple returned commands by displaying a menu and returning the selected index.
+///
+/// # Arguments
+///
+/// * `matching_commands` - The vector of matching commands.
+/// * `input` - The input string to match against.
+///
+/// # Returns
+///
+/// The selected index of the command menu.
 pub fn handle_multiple_returned_command(
     matching_commands: &Vec<(String, String)>,
     input: &str,
-) -> i32 {
+) -> Result<usize, i32> {
     let menu_items = get_command_array(matching_commands, input);
     let response = _commands_menu(menu_items);
     response

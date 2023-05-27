@@ -1,11 +1,35 @@
 use crate::commands::Command;
 use rusqlite::{params, Connection, Result};
 
+pub mod file_parse;
 pub struct SqliteDatabase {
     connection: Connection,
 }
 
+/// The `SqliteDatabase` stores commands and their descriptions.
+///
+/// # Examples
+///
+/// ```
+/// use crate::database::SqliteDatabase;
+///
+/// let db = SqliteDatabase::instance();
+/// let command = Command::new("example", "This is an example command");
+/// db.insert(&command).expect("Failed to insert command");
+/// let description = db.get_command_description("example").expect("Failed to get command description");
+/// assert_eq!(description, Some("This is an example command".to_string()));
+/// ```.
 impl SqliteDatabase {
+    /// Creates a new `SqliteDatabase` instance, with database at path "commands.db"
+    /// creates a new table with columns id, command_name and description if table does not already exists
+    ///
+    /// # Returns
+    ///
+    /// The initialized `SqliteDatabase` instance.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the database connection fails.
     pub fn new() -> Result<Self> {
         let connection = Connection::open("commands.db")?;
         connection.execute(
@@ -19,6 +43,15 @@ impl SqliteDatabase {
         Ok(SqliteDatabase { connection })
     }
 
+    /// Inserts a command into the database.
+    ///
+    /// # Arguments
+    ///
+    /// * `command` - The command(Command struct) to insert.
+    ///
+    /// # Returns
+    ///
+    /// Result indicating success or failure
     pub fn insert(&self, command: &Command) -> Result<()> {
         self.connection.execute(
             "INSERT INTO commands (command_name, description) VALUES (?1, ?2)",
@@ -27,6 +60,19 @@ impl SqliteDatabase {
         Ok(())
     }
 
+    /// Retrieves the description of the given command from the database.
+    ///
+    /// # Arguments
+    ///
+    /// * `command_name` - The name of the command.
+    ///
+    /// # Returns
+    ///
+    /// The description of the command, wrapped in `Option`.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the query fails.
     pub fn get_command_description(&self, command_name: &str) -> Result<Option<String>> {
         let mut stmt = self
             .connection
@@ -38,6 +84,16 @@ impl SqliteDatabase {
             Err(err) => Err(err),
         }
     }
+
+    /// Get the matching commands based on the given prefix.
+    ///
+    /// # Arguments
+    ///
+    /// * `prefix` - The prefix to search for.
+    ///
+    /// # Returns
+    ///
+    /// A vector of matching command names and descriptions
 
     pub fn find_matching_commands(&self, prefix: &str) -> Result<Vec<(String, String)>> {
         let mut stmt = self
@@ -54,6 +110,12 @@ impl SqliteDatabase {
         Ok(matching_commands)
     }
 
+    /// Prints all the command stored in database, Commands and Description appear in separte lines
+    /// Commands are separated by dashed lines.
+    ///
+    /// # Returns
+    ///
+    /// Result indicating success or failure
     pub fn _view_all_commands(&self) -> Result<()> {
         let mut stmt = self
             .connection
@@ -71,6 +133,16 @@ impl SqliteDatabase {
         Ok(())
     }
 
+    /// Get the matching commands or description matching the input string. (Input string exists in either Description or Command)
+    ///
+    /// # Arguments
+    ///
+    /// * `db` - The database instance.
+    /// * `input` - The prefix to search for.
+    ///
+    /// # Returns
+    ///
+    /// A vector of matching command names and descriptions
     pub fn search_commands(&self, input: &str) -> Result<Vec<(String, String)>> {
         let search_words: Vec<&str> = input.split_whitespace().collect();
 
@@ -111,6 +183,11 @@ impl SqliteDatabase {
         Ok(matching_commands)
     }
 
+    /// Clears all commands from the database.
+    ///
+    /// # Returns
+    ///
+    /// Result indicating success or failure
     pub fn clear(&self) -> Result<()> {
         self.connection.execute("DELETE FROM commands", [])?;
         Ok(())

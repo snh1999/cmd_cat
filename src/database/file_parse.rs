@@ -2,6 +2,12 @@ use crate::commands::Command;
 use crate::database::SqliteDatabase;
 use std::fs;
 
+/// Inserts commands from a file into the database.
+///
+/// # Arguments
+///
+/// * `filepath` - The path to the file containing the commands.
+/// * `db` - The database to insert the commands into.
 pub fn insert_commands_from_file(filepath: &str, db: &SqliteDatabase) {
     let file_content = read_file(filepath);
     let results = extract_key_value_from_file(&file_content);
@@ -13,12 +19,26 @@ pub fn insert_commands_from_file(filepath: &str, db: &SqliteDatabase) {
     }
 }
 
+/// Cleans the database and updates it by processing files in the specified folder.
+/// This is an internal function and should not be used directly.
+/// Should be used for updating the databse only
+///
+/// # Arguments
+///
+/// * `db` - The database to update.
+/// * `folder_path` - The path to the folder containing the files to process.
 pub fn _clean_update_database(db: &SqliteDatabase, folder_path: &str) {
     db.clear().unwrap();
-    _update_database(db, folder_path)
+    update_database(db, folder_path)
 }
 
-pub fn _update_database(db: &SqliteDatabase, folder_path: &str) {
+/// Updates the database by processing files in the specified folder.
+///
+/// # Arguments
+///
+/// * `db` - The database to update.
+/// * `folder_path` - The path to the folder containing the files to process.
+pub fn update_database(db: &SqliteDatabase, folder_path: &str) {
     let filenames = _read_folder(folder_path);
     for filename in filenames {
         println!("Processing: {filename}");
@@ -26,12 +46,28 @@ pub fn _update_database(db: &SqliteDatabase, folder_path: &str) {
     }
 }
 
-pub fn read_file(filepath: &str) -> String {
-    let contents =
-        fs::read_to_string(filepath).expect(&format!("Failed to read file: {}", filepath));
-    contents
+/// Reads the contents of a file, basically a error handler
+///
+/// # Arguments
+///
+/// * `filepath` - The path to the file to read.
+///
+/// # Returns
+///
+/// The contents of the file as a `String`.
+fn read_file(filepath: &str) -> String {
+    fs::read_to_string(filepath).expect(&format!("Failed to read file: {}", filepath))
 }
 
+/// Extracts key-value pairs from a formatted input string based on tldr convention.
+///
+/// # Arguments
+///
+/// * `input` - The input string containing key-value pairs.
+///
+/// # Returns
+///
+/// A vector of key-value pairs as tuples.
 pub fn extract_key_value_from_file(input: &str) -> Vec<(String, String)> {
     let mut results = Vec::new();
     let lines = input.lines();
@@ -61,7 +97,15 @@ pub fn extract_key_value_from_file(input: &str) -> Vec<(String, String)> {
     results
 }
 
-/// returns all the filename from folders
+/// Recursively reads all file paths within a folder.
+///
+/// # Arguments
+///
+/// * `dirpath` - The path to the folder to read.
+///
+/// # Returns
+///
+/// A vector of file paths.
 fn _read_folder(dirpath: &str) -> Vec<String> {
     let mut filepaths = Vec::new();
 

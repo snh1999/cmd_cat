@@ -1,17 +1,15 @@
-use crate::commands::command_executor::execute_command;
-use crate::database::SqliteDatabase;
+use commands::command_executor::execute_command;
+use commands::command_helper::*;
 use custom_styling::color_style;
 use custom_styling::myreedline;
-use file_parse::_clean_update_database;
-use main_helper::*;
+use database::file_parse::_clean_update_database;
+use database::SqliteDatabase;
 use reedline::{DefaultPrompt, Reedline, Signal};
 use std::{env, fs, path::Path};
 
 mod commands;
 mod custom_styling;
 mod database;
-mod file_parse;
-mod main_helper;
 mod utils;
 
 fn main() {
