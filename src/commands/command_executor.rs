@@ -17,6 +17,7 @@ pub fn execute_command(input: &str) {
             if let Err(e) = env::set_current_dir(&root) {
                 eprintln!("{}", e);
             }
+            println!("{}", env::current_dir().unwrap().to_str().unwrap());
         }
         "exit" => return,
         command => {
@@ -27,7 +28,7 @@ pub fn execute_command(input: &str) {
                 Ok(mut child) => {
                     let _ = child.wait();
                 }
-                Err(e) => eprintln!("{}", e),
+                Err(e) => eprintln!("Error: {}", e),
             };
         }
     }

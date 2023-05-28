@@ -1,10 +1,17 @@
 use commands::command_executor::execute_command;
 use commands::command_helper::*;
+
 use custom_styling::color_style;
-use custom_styling::myreedline;
+
 use database::file_parse::_clean_update_database;
 use database::SqliteDatabase;
-use reedline::{DefaultPrompt, Reedline, Signal};
+
+use custom_styling::color_style::style_prompt_text;
+
+use rustyline::config::Configurer;
+use rustyline::error::ReadlineError;
+use rustyline::DefaultEditor;
+
 use std::{env, fs, path::Path};
 
 mod commands;
@@ -30,26 +37,25 @@ fn main() {
 }
 
 fn start_repl(db: SqliteDatabase) {
-    let mut line_editor = Reedline::create();
-    let prompt = DefaultPrompt::new(
-        myreedline::get_left_prompt(),
-        myreedline::get_right_prompt(),
-    );
-
+    let mut rl = DefaultEditor::new().unwrap();
+    rl.set_max_history_size(100).unwrap();
     loop {
-        let sig = line_editor.read_line(&prompt);
-
-        match sig {
-            Ok(Signal::Success(input)) => handle_input(&input, &db),
-            Ok(Signal::CtrlD) | Ok(Signal::CtrlC) => {
+        let input = rl.readline(&style_prompt_text("cmd-cat> "));
+        match input {
+            Ok(input) => {
+                rl.add_history_entry(input.as_str()).unwrap();
+                handle_input(&input, &db);
+            }
+            Err(ReadlineError::Interrupted | ReadlineError::Eof) => {
                 println!(
                     "{}",
                     color_style::bold_text(&color_style::color_light_red("Keyboard Interrupt!"))
                 );
                 break;
             }
-            x => {
-                println!("Event: {:?}", x);
+            Err(err) => {
+                println!("{err}");
+                break;
             }
         }
     }

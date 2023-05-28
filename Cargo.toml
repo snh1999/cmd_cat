@@ -1,5 +1,5 @@
 [package]
-name = "cmd_analyzer"
+name = "cmd-cat"
 version = "0.1.0"
 edition = "2021"
 
@@ -7,6 +7,6 @@ edition = "2021"
 
 [dependencies]
 rusqlite = { version = "0.29.0", features = ["bundled"] }
-reedline = "0.19.1"
 inquire = "0.6.2"
 termion = "2.0.1"
+rustyline = "11.0.0"

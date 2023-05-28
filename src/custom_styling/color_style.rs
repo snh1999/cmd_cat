@@ -80,3 +80,7 @@ pub fn format_command(command_parts: Vec<&str>, input_parts: Vec<&str>) -> Strin
         .collect::<Vec<String>>()
         .join(" ")
 }
+
+pub fn style_prompt_text(text: &str) -> String {
+    bold_text(&color_green(text))
+}

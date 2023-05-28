@@ -18,7 +18,7 @@ pub struct SqliteDatabase {
 /// db.insert(&command).expect("Failed to insert command");
 /// let description = db.get_command_description("example").expect("Failed to get command description");
 /// assert_eq!(description, Some("This is an example command".to_string()));
-/// ```.
+/// ```
 impl SqliteDatabase {
     /// Creates a new `SqliteDatabase` instance, with database at path "commands.db"
     /// creates a new table with columns id, command_name and description if table does not already exists

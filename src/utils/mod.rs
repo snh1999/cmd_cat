@@ -52,6 +52,7 @@ pub fn execute_current_command(command: &str, description: &str) {
     // clear_previous_line();
 
     if confirmation {
+        println!("\x1B[1A");
         execute_command(command);
     } else {
         println!()
@@ -168,5 +169,6 @@ fn _get_user_input(message: String) -> String {
 
 /// Clears the previous line in the console output.
 pub fn clear_previous_line() {
-    print!("\x1B[1A\x1B[K"); // Move up one line and clear the line
+    println!("\x1B[1A\x1B[2K"); // Move up one line and clear the line
+    print!("\x1B[1A");
 }

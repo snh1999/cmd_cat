@@ -27,12 +27,13 @@ pub fn get_custom_confirmation(prompt_text: &str) -> bool {
         .with_default(true)
         .with_render_config(confirm_render_config())
         .prompt();
+    clear_previous_line();
+
     let response = match response {
         Ok(data) => data,
         Err(_) => false,
     };
 
-    clear_previous_line();
     response
 }
 
@@ -46,7 +47,7 @@ pub fn get_custom_confirmation(prompt_text: &str) -> bool {
 /// # Returns
 ///
 /// A vector of formatted command menu items.
-pub fn get_command_array(matching_commands: &Vec<(String, String)>, input: &str) -> Vec<String> {
+fn get_command_array(matching_commands: &Vec<(String, String)>, input: &str) -> Vec<String> {
     let mut menu_items: Vec<String> = Vec::new();
     for (command, description) in matching_commands {
         let colored_command = highlight_command(&command, input);
@@ -67,7 +68,7 @@ pub fn get_command_array(matching_commands: &Vec<(String, String)>, input: &str)
 /// # Returns
 ///
 /// The selected index of the command menu.
-fn _commands_menu(menu_items: Vec<String>) -> Result<usize, i32> {
+fn commands_menu(menu_items: Vec<String>) -> Result<usize, i32> {
     let response = Select::new("Matching commands", menu_items)
         .with_render_config(my_render_config())
         .with_help_message(
@@ -108,6 +109,6 @@ pub fn handle_multiple_returned_command(
     input: &str,
 ) -> Result<usize, i32> {
     let menu_items = get_command_array(matching_commands, input);
-    let response = _commands_menu(menu_items);
+    let response = commands_menu(menu_items);
     response
 }
