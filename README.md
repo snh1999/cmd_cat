@@ -57,7 +57,11 @@ NOTICE: for first time usage, you will need to update the database by running `c
 
 ### Releases
 
-Will be added later as soon as Testing is done.
+To download the application, please visit the releases page. You will find two options available: an AppImage and a Linux x86_64 binary.
+
+Make sure to also download the `commands.db` file, which is available in releases (also packaged with the AppImage - cmd-cat.appimage.tar.xz, just extracting the folder would do). It's important to keep the executable file in the same folder as the `commands.db` file.
+
+Alternatively, you can run `./cmd-cat --update`(cmd-cat is the downloaded filename) after downloading the binary. Ensure that you launch the command from the suitable folder where you have placed the downloaded file. This command will create the database and place it same folder as binary download. Please note that you should have Git installed on your system for this operation.
 
 ## Dependencies
 
