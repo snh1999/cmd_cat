@@ -1,6 +1,6 @@
-# CMD Cat
+# CMD-CAT
 
-CMD Cat is a command-line tool for searching and executing commands. It provides a REPL (Read-Eval-Print Loop) interface where you can enter commands and get results.
+cmd-cat is a command-line tool for searching and executing commands. It provides a REPL (Read-Eval-Print Loop) interface where you can enter commands and get results. Currently cmd-cat only uses tldr-pages to construct the database, but the plan is to intergrate man-pages analysis as well.
 
 ## Features
 
@@ -79,7 +79,7 @@ CMD Cat depends on the following external crates:
 -   Incorporate man pages for comprehensive command information
 -   Autocompletion inspired by Node.js REPL
 
-## Database Efficiency
+## Database
 
 CMD Cat downloads from [tldr-page](https://github.com/snh1999/tldr-page) for improved efficiency while update. This repository trims down the original tldr pages git commit (26MB) to ensure faster download access to command information. The repository will be kept updated to provide the latest command references.
 
