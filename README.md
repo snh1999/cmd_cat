@@ -40,9 +40,7 @@ cmd-cat> meow <search-term>
 CMD Cat relies on a database of commands for searching and execution. You can update the database by running the following command:
 
 ```bash
-cmd_cat
-cmd-cat> <command>
-cmd-cat> meow <search-term>
+cmd_cat --update
 ```
 
 ## Installation
@@ -55,6 +53,8 @@ To install CMD Cat, you need to have Rust and Cargo installed. Then, you can bui
 cargo build --release
 ```
 
+NOTICE: for first time usage, you will need to update the database by running `cmd_cat --update` which will take around 3MB of internet and 2MB of disk space. If you move the binary, either move the `commands.db` as well or run update again in new location.
+
 ### Releases
 
 Will be added later as soon as Testing is done.
@@ -64,7 +64,7 @@ Will be added later as soon as Testing is done.
 CMD Cat depends on the following external crates:
 
 -   rusqlite: 0.29.0
--   reedline: 0.19.1
+-   rustyline = 11.0.0
 -   inquire: 0.6.2
 -   termion: 2.0.1
 

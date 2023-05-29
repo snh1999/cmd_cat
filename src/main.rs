@@ -62,13 +62,17 @@ fn start_repl(db: SqliteDatabase) {
 }
 
 fn handle_input(input: &str, db: &SqliteDatabase) {
+    let mut is_meow = false;
     input.split_once(" ").map(|(first_word, rest_string)| {
         if first_word == "meow" {
+            is_meow = true;
             search_in_database(rest_string, db);
             return;
         }
     });
-    handle_command(input, db)
+    if !is_meow {
+        handle_command(input, db)
+    }
 }
 
 fn update_database(db: &SqliteDatabase) {
