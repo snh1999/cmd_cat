@@ -2,6 +2,10 @@
 
 cmd-cat is a command-line tool for searching and executing commands. It provides a REPL (Read-Eval-Print Loop) interface where you can enter commands and get results. Currently cmd-cat only uses tldr-pages to construct the database, but the plan is to intergrate man-pages analysis as well.
 
+### Motivation
+While listening to the story of how [GitLab lost 6 hour of data](https://youtu.be/tLdRBsuvVKc?si=yKPc-ZKAB9J_30rp) because someone ran wrong command in wrong shell, One question appeared- why don't we have some tool that gives us some additional hint before we execute any command (a mix of node/python REPL and tldr++). The final goal is to build a configurable command line tool which would provide additional information before executing (selected) commands and search through commands when needed.
+- The project is not there yet, but I totally plan on improving this further once my hands are free.
+
 ## Features
 
 -   Search and execute commands
@@ -68,7 +72,7 @@ Alternatively, you can run `./cmd-cat --update`(cmd-cat is the downloaded filena
 CMD Cat depends on the following external crates:
 
 -   rusqlite: 0.29.0
--   rustyline = 11.0.0
+-   rustyline: 11.0.0
 -   inquire: 0.6.2
 -   termion: 2.0.1
 
